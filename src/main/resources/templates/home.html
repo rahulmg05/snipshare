@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>SnipShare - Share Your Code Snippets</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .error {
+            color: red;
+            margin-bottom: 10px;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 300px;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: monospace;
+            resize: vertical;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        select {
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .char-counter {
+            text-align: right;
+            color: #666;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+<h1>SnipShare</h1>
+<p>Share your code snippets or text with others using a short URL.</p>
+
+<div class="error" th:if="${error}" th:text="${error}"></div>
+
+<form method="post" th:action="@{/paste}" th:object="${pasteRequest}">
+    <div>
+        <label for="content">Paste your content here (max 50,000 characters):</label>
+        <div class="char-counter">
+            <span id="charCount">0</span>/50000 characters
+        </div>
+        <textarea
+                id="content"
+                maxlength="50000"
+                oninput="updateCharCount(this)"
+                placeholder="Enter your code or text here..."
+                required
+                th:field="*{content}"></textarea>
+        <div class="error" th:errors="*{content}" th:if="${#fields.hasErrors('content')}"></div>
+    </div>
+
+    <div>
+        <label for="expirationMinutes">Expiration time:</label>
+        <select id="expirationMinutes" th:field="*{expirationMinutes}">
+            <option value="5">5 minutes</option>
+            <option value="60">1 hour</option>
+            <option value="360">6 hours</option>
+            <option value="720">12 hours</option>
+            <option selected value="1440">1 day</option>
+            <option value="10080">1 week</option>
+            <option value="43200">30 days</option>
+        </select>
+        <div class="error" th:errors="*{expirationMinutes}" th:if="${#fields.hasErrors('expirationMinutes')}"></div>
+    </div>
+
+    <button type="submit">Create Paste</button>
+</form>
+
+<script>
+    function updateCharCount(textarea) {
+        const charCount = textarea.value.length;
+        document.getElementById('charCount').textContent = charCount;
+
+        // Prevent typing more than 50000 characters
+        if (charCount > 50000) {
+            textarea.value = textarea.value.substring(0, 50000);
+            document.getElementById('charCount').textContent = 50000;
+        }
+    }
+
+    // Initialize character count on page load
+    window.onload = function () {
+        const textarea = document.getElementById('content');
+        updateCharCount(textarea);
+    };
+</script>
+</body>
+</html>

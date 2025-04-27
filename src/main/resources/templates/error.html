@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>SnipShare - Error</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .error-container {
+            margin-top: 50px;
+            padding: 20px;
+            background-color: #f8d7da;
+            border-radius: 4px;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+
+        .error-code {
+            font-size: 72px;
+            margin-bottom: 20px;
+            color: #dc3545;
+        }
+
+        .error-message {
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+<h1>SnipShare</h1>
+
+<div class="error-container">
+    <div class="error-code" th:text="${status}">404</div>
+    <div class="error-message" th:text="${error}">Paste not found or has expired</div>
+    <p>The paste you're looking for might have been removed, expired, or never existed.</p>
+</div>
+
+<div style="margin-top: 30px;">
+    <a class="btn" href="/">Create New Paste</a>
+</div>
+</body>
+</html>

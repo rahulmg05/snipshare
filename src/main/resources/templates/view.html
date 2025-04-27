@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>SnipShare - View Paste</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .info {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .content {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            white-space: pre-wrap;
+            font-family: monospace;
+            overflow-x: auto;
+        }
+
+        .actions {
+            margin-top: 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            padding: 8px 15px;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+
+        .btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+<h1>SnipShare</h1>
+
+<div class="info">
+    <p>
+        <strong>Created:</strong> <span th:text="${#temporals.format(paste.createdAt, 'yyyy-MM-dd HH:mm')}">2023-01-01 12:00</span>
+        <br>
+        <strong>Expires:</strong> <span th:text="${#temporals.format(paste.expirationDate, 'yyyy-MM-dd HH:mm')}">2023-01-02 12:00</span>
+        <br>
+        <strong>URL:</strong> <a th:href="@{'/' + ${paste.shortUrl}}"
+                                 th:text="${#httpServletRequest.requestURL}">URL</a>
+    </p>
+</div>
+
+<div class="content" th:text="${paste.content}">
+    Paste content will be displayed here.
+</div>
+
+<div class="actions">
+    <a class="btn" href="/">Create New Paste</a>
+</div>
+</body>
+</html>

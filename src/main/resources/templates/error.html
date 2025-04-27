@@ -5,6 +5,32 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>SnipShare - Error</title>
     <style>
+        :root {
+            /* Light mode (default) */
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --error-bg: #f8d7da;
+            --error-border: #f5c6cb;
+            --error-text: #721c24;
+            --error-code: #dc3545;
+            --button-bg: #4CAF50;
+            --button-hover-bg: #45a049;
+            --button-text: #ffffff;
+        }
+
+        /* Dark mode */
+        [data-theme="dark"] {
+            --bg-color: #222222;
+            --text-color: #e0e0e0;
+            --error-bg: #442a2d;
+            --error-border: #693e42;
+            --error-text: #ffb3b9;
+            --error-code: #ff6b6b;
+            --button-bg: #388e3c;
+            --button-hover-bg: #2e7d32;
+            --button-text: #ffffff;
+        }
+
         body {
             font-family: Arial, sans-serif;
             line-height: 1.6;
@@ -13,25 +39,28 @@
             max-width: 1000px;
             margin: 0 auto;
             text-align: center;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
         }
 
         h1 {
-            color: #333;
+            color: var(--text-color);
         }
 
         .error-container {
             margin-top: 50px;
             padding: 20px;
-            background-color: #f8d7da;
+            background-color: var(--error-bg);
             border-radius: 4px;
-            border: 1px solid #f5c6cb;
-            color: #721c24;
+            border: 1px solid var(--error-border);
+            color: var(--error-text);
         }
 
         .error-code {
             font-size: 72px;
             margin-bottom: 20px;
-            color: #dc3545;
+            color: var(--error-code);
         }
 
         .error-message {
@@ -41,8 +70,8 @@
 
         .btn {
             display: inline-block;
-            background-color: #4CAF50;
-            color: white;
+            background-color: var(--button-bg);
+            color: var(--button-text);
             padding: 10px 20px;
             text-decoration: none;
             border-radius: 4px;
@@ -50,11 +79,75 @@
         }
 
         .btn:hover {
-            background-color: #45a049;
+            background-color: var(--button-hover-bg);
+        }
+
+        .theme-switch {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .theme-switch-label {
+            margin-right: 10px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--button-bg);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
         }
     </style>
 </head>
 <body>
+<div class="theme-switch">
+    <span class="theme-switch-label">Dark Mode</span>
+    <label class="switch">
+        <input type="checkbox" id="theme-toggle">
+        <span class="slider"></span>
+    </label>
+</div>
 <h1>SnipShare</h1>
 
 <div class="error-container">
@@ -66,5 +159,34 @@
 <div style="margin-top: 30px;">
     <a class="btn" href="/">Create New Paste</a>
 </div>
+
+<script>
+    // Theme toggle functionality
+    function setTheme(isDark) {
+        if (isDark) {
+            document.body.setAttribute('data-theme', 'dark');
+            document.getElementById('theme-toggle').checked = true;
+        } else {
+            document.body.removeAttribute('data-theme');
+            document.getElementById('theme-toggle').checked = false;
+        }
+        // Save preference to localStorage
+        localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
+    }
+
+    // Initialize on page load
+    window.onload = function () {
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('darkMode');
+        if (savedTheme === 'enabled') {
+            setTheme(true);
+        }
+
+        // Add event listener for theme toggle
+        document.getElementById('theme-toggle').addEventListener('change', function(e) {
+            setTheme(e.target.checked);
+        });
+    };
+</script>
 </body>
 </html>

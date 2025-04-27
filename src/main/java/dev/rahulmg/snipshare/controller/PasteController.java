@@ -1,7 +1,7 @@
 package dev.rahulmg.snipshare.controller;
 
 import dev.rahulmg.snipshare.dto.PasteRequest;
-import dev.rahulmg.snipshare.exception.PasteNotFoundException;
+import dev.rahulmg.snipshare.exception.custom.PasteNotFoundException;
 import dev.rahulmg.snipshare.model.Paste;
 import dev.rahulmg.snipshare.service.PasteService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Optional;
 
@@ -38,14 +37,11 @@ public class PasteController {
 
   @PostMapping("/paste")
   public String createPaste(@Valid @ModelAttribute("pasteRequest") PasteRequest pasteRequest,
-                            BindingResult bindingResult,
-                            RedirectAttributes redirectAttributes,
-                            Model model) {
+                            BindingResult bindingResult) {
     if (bindingResult.hasErrors()) {
       return "home";
     }
 
-    // No try-catch block needed as exceptions will be handled by GlobalExceptionHandler
     Paste paste = pasteService.createPaste(
       pasteRequest.getContent(),
       pasteRequest.getExpirationMinutes()

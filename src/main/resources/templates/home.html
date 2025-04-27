@@ -5,6 +5,32 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>SnipShare - Share Your Code Snippets</title>
     <style>
+        :root {
+            /* Light mode (default) */
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --border-color: #dddddd;
+            --input-bg: #ffffff;
+            --error-color: #ff0000;
+            --button-bg: #4CAF50;
+            --button-hover-bg: #45a049;
+            --button-text: #ffffff;
+            --counter-color: #666666;
+        }
+
+        /* Dark mode */
+        [data-theme="dark"] {
+            --bg-color: #222222;
+            --text-color: #e0e0e0;
+            --border-color: #444444;
+            --input-bg: #333333;
+            --error-color: #ff6b6b;
+            --button-bg: #388e3c;
+            --button-hover-bg: #2e7d32;
+            --button-text: #ffffff;
+            --counter-color: #aaaaaa;
+        }
+
         body {
             font-family: Arial, sans-serif;
             line-height: 1.6;
@@ -12,14 +38,17 @@
             padding: 20px;
             max-width: 1000px;
             margin: 0 auto;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
         }
 
         h1 {
-            color: #333;
+            color: var(--text-color);
         }
 
         .error {
-            color: red;
+            color: var(--error-color);
             margin-bottom: 10px;
         }
 
@@ -32,10 +61,12 @@
             min-height: 300px;
             padding: 10px;
             margin-bottom: 10px;
-            border: 1px solid #ddd;
+            border: 1px solid var(--border-color);
             border-radius: 4px;
             font-family: monospace;
             resize: vertical;
+            background-color: var(--input-bg);
+            color: var(--text-color);
         }
 
         label {
@@ -47,13 +78,15 @@
         select {
             padding: 8px;
             border-radius: 4px;
-            border: 1px solid #ddd;
+            border: 1px solid var(--border-color);
             margin-bottom: 20px;
+            background-color: var(--input-bg);
+            color: var(--text-color);
         }
 
         button {
-            background-color: #4CAF50;
-            color: white;
+            background-color: var(--button-bg);
+            color: var(--button-text);
             padding: 10px 15px;
             border: none;
             border-radius: 4px;
@@ -62,17 +95,81 @@
         }
 
         button:hover {
-            background-color: #45a049;
+            background-color: var(--button-hover-bg);
         }
 
         .char-counter {
             text-align: right;
-            color: #666;
+            color: var(--counter-color);
             margin-bottom: 10px;
+        }
+
+        .theme-switch {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .theme-switch-label {
+            margin-right: 10px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--button-bg);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
         }
     </style>
 </head>
 <body>
+<div class="theme-switch">
+    <span class="theme-switch-label">Dark Mode</span>
+    <label class="switch">
+        <input type="checkbox" id="theme-toggle">
+        <span class="slider"></span>
+    </label>
+</div>
 <h1>SnipShare</h1>
 <p>Share your code snippets or text with others using a short URL.</p>
 
@@ -123,10 +220,34 @@
         }
     }
 
-    // Initialize character count on page load
+    // Theme toggle functionality
+    function setTheme(isDark) {
+        if (isDark) {
+            document.body.setAttribute('data-theme', 'dark');
+            document.getElementById('theme-toggle').checked = true;
+        } else {
+            document.body.removeAttribute('data-theme');
+            document.getElementById('theme-toggle').checked = false;
+        }
+        // Save preference to localStorage
+        localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
+    }
+
+    // Initialize on page load
     window.onload = function () {
         const textarea = document.getElementById('content');
         updateCharCount(textarea);
+
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('darkMode');
+        if (savedTheme === 'enabled') {
+            setTheme(true);
+        }
+
+        // Add event listener for theme toggle
+        document.getElementById('theme-toggle').addEventListener('change', function(e) {
+            setTheme(e.target.checked);
+        });
     };
 </script>
 </body>

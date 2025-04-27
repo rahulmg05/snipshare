@@ -1,7 +1,7 @@
 package dev.rahulmg.snipshare.exception.handler;
 
-import dev.rahulmg.snipshare.exception.ContentValidationException;
-import dev.rahulmg.snipshare.exception.PasteNotFoundException;
+import dev.rahulmg.snipshare.exception.custom.ContentValidationException;
+import dev.rahulmg.snipshare.exception.custom.PasteNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;

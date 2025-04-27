@@ -1,4 +1,4 @@
-package dev.rahulmg.snipshare.exception;
+package dev.rahulmg.snipshare.exception.custom;
 
 /**
  * Exception thrown when a requested paste is not found or has expired.

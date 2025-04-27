@@ -1,6 +1,6 @@
 package dev.rahulmg.snipshare.service;
 
-import dev.rahulmg.snipshare.exception.ContentValidationException;
+import dev.rahulmg.snipshare.exception.custom.ContentValidationException;
 import dev.rahulmg.snipshare.model.Paste;
 import dev.rahulmg.snipshare.repository.PasteRepository;
 import org.springframework.beans.factory.annotation.Autowired;

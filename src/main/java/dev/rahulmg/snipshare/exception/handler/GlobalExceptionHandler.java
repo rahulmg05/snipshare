@@ -27,7 +27,7 @@ public class GlobalExceptionHandler {
    */
   @ExceptionHandler(ContentValidationException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
-  public String handleContentValidationException(ContentValidationException ex, Model model, HttpServletRequest request) {
+  public String handleContentValidationException(final ContentValidationException ex, final Model model, final HttpServletRequest request) {
     model.addAttribute("error", ex.getMessage());
     model.addAttribute("status", HttpStatus.BAD_REQUEST.value());
     model.addAttribute("httpServletRequest", request);
@@ -44,7 +44,7 @@ public class GlobalExceptionHandler {
    */
   @ExceptionHandler(PasteNotFoundException.class)
   @ResponseStatus(HttpStatus.NOT_FOUND)
-  public String handlePasteNotFoundException(PasteNotFoundException ex, Model model, HttpServletRequest request) {
+  public String handlePasteNotFoundException(final PasteNotFoundException ex, final Model model, final HttpServletRequest request) {
     model.addAttribute("error", ex.getMessage());
     model.addAttribute("status", HttpStatus.NOT_FOUND.value());
     model.addAttribute("httpServletRequest", request);
@@ -60,7 +60,7 @@ public class GlobalExceptionHandler {
    * @return the error view name
    */
   @ExceptionHandler(ResponseStatusException.class)
-  public String handleResponseStatusException(ResponseStatusException ex, Model model, HttpServletRequest request) {
+  public String handleResponseStatusException(final ResponseStatusException ex, final Model model, final HttpServletRequest request) {
     model.addAttribute("error", ex.getReason());
     model.addAttribute("status", ex.getStatusCode().value());
     model.addAttribute("httpServletRequest", request);
@@ -77,7 +77,7 @@ public class GlobalExceptionHandler {
    */
   @ExceptionHandler(Exception.class)
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-  public String handleGenericException(Exception ex, Model model, HttpServletRequest request) {
+  public String handleGenericException(final Exception ex, final Model model, final HttpServletRequest request) {
     model.addAttribute("error", "An unexpected error occurred: " + ex.getMessage());
     model.addAttribute("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
     model.addAttribute("httpServletRequest", request);

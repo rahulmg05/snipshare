@@ -23,12 +23,12 @@ public class PasteController {
   private final PasteService pasteService;
 
   @Autowired
-  public PasteController(PasteService pasteService) {
+  public PasteController(final PasteService pasteService) {
     this.pasteService = pasteService;
   }
 
   @GetMapping("/")
-  public String homePage(Model model) {
+  public String homePage(final Model model) {
     if (!model.containsAttribute("pasteRequest")) {
       model.addAttribute("pasteRequest", new PasteRequest());
     }
@@ -36,13 +36,13 @@ public class PasteController {
   }
 
   @PostMapping("/paste")
-  public String createPaste(@Valid @ModelAttribute("pasteRequest") PasteRequest pasteRequest,
-                            BindingResult bindingResult) {
+  public String createPaste(@Valid @ModelAttribute("pasteRequest") final PasteRequest pasteRequest,
+                            final BindingResult bindingResult) {
     if (bindingResult.hasErrors()) {
       return "home";
     }
 
-    Paste paste = pasteService.createPaste(
+    final Paste paste = pasteService.createPaste(
       pasteRequest.getContent(),
       pasteRequest.getExpirationMinutes()
     );
@@ -50,8 +50,8 @@ public class PasteController {
   }
 
   @GetMapping("/{shortUrl}")
-  public String viewPaste(@PathVariable String shortUrl, Model model, HttpServletRequest request) {
-    Optional<Paste> pasteOptional = pasteService.getPasteByShortUrl(shortUrl);
+  public String viewPaste(@PathVariable final String shortUrl, final Model model, final HttpServletRequest request) {
+    final Optional<Paste> pasteOptional = pasteService.getPasteByShortUrl(shortUrl);
 
     if (pasteOptional.isEmpty()) {
       throw new PasteNotFoundException("Paste not found or has expired");

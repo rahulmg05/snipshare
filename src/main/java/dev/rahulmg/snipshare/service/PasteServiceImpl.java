@@ -21,14 +21,14 @@ public class PasteServiceImpl implements PasteService {
   private final SecureRandom random = new SecureRandom();
 
   @Autowired
-  public PasteServiceImpl(PasteRepository pasteRepository,
-                          @Value("${snipshare.max-content-length}") int maxContentLength) {
+  public PasteServiceImpl(final PasteRepository pasteRepository,
+                          @Value("${snipshare.max-content-length}") final int maxContentLength) {
     this.pasteRepository = pasteRepository;
     this.maxContentLength = maxContentLength;
   }
 
   @Override
-  public Paste createPaste(String content, int expirationMinutes) {
+  public Paste createPaste(final String content, final int expirationMinutes) {
     if (content == null || content.isBlank()) {
       throw new ContentValidationException("Content cannot be empty");
     }
@@ -37,7 +37,7 @@ public class PasteServiceImpl implements PasteService {
       throw new ContentValidationException("Content cannot exceed " + maxContentLength + " characters");
     }
 
-    Paste paste = new Paste();
+    final Paste paste = new Paste();
     paste.setContent(content);
     paste.setShortUrl(generateUniqueShortUrl());
     paste.setExpirationDate(calculateExpirationDate(expirationMinutes));
@@ -46,11 +46,11 @@ public class PasteServiceImpl implements PasteService {
   }
 
   @Override
-  public Optional<Paste> getPasteByShortUrl(String shortUrl) {
-    Optional<Paste> pasteOptional = pasteRepository.findByShortUrl(shortUrl);
+  public Optional<Paste> getPasteByShortUrl(final String shortUrl) {
+    final Optional<Paste> pasteOptional = pasteRepository.findByShortUrl(shortUrl);
 
     if (pasteOptional.isPresent()) {
-      Paste paste = pasteOptional.get();
+      final Paste paste = pasteOptional.get();
       if (paste.isExpired()) {
         return Optional.empty();
       }
@@ -62,29 +62,34 @@ public class PasteServiceImpl implements PasteService {
 
   @Override
   public String generateUniqueShortUrl() {
-    String shortUrl;
-    do {
-      shortUrl = generateRandomShortUrl();
-    } while (pasteRepository.existsByShortUrl(shortUrl));
-
-    return shortUrl;
+    while (true) {
+      final String shortUrl = generateRandomShortUrl();
+      if (!pasteRepository.existsByShortUrl(shortUrl)) {
+        return shortUrl;
+      }
+    }
   }
 
   @Override
-  public LocalDateTime calculateExpirationDate(int expirationMinutes) {
+  public LocalDateTime calculateExpirationDate(final int expirationMinutes) {
     if (expirationMinutes <= 0) {
       // Default to 24 hours if no valid expiration is provided
-      expirationMinutes = 24 * 60;
+      final int defaultExpirationMinutes = 24 * 60;
+      return LocalDateTime.now().plusMinutes(defaultExpirationMinutes);
     }
     return LocalDateTime.now().plusMinutes(expirationMinutes);
   }
 
   private String generateRandomShortUrl() {
-    StringBuilder sb = new StringBuilder(SHORT_URL_LENGTH);
-    for (int i = 0; i < SHORT_URL_LENGTH; i++) {
-      int randomIndex = random.nextInt(ALPHANUMERIC.length());
-      sb.append(ALPHANUMERIC.charAt(randomIndex));
-    }
+    final StringBuilder sb = new StringBuilder(SHORT_URL_LENGTH);
+    generateRandomChars(sb);
     return sb.toString();
+  }
+
+  private void generateRandomChars(final StringBuilder sb) {
+    java.util.stream.IntStream.range(0, SHORT_URL_LENGTH).forEach(i -> {
+      final int randomIndex = random.nextInt(ALPHANUMERIC.length());
+      sb.append(ALPHANUMERIC.charAt(randomIndex));
+    });
   }
 }

@@ -14,7 +14,7 @@ public interface PasteService {
    * @param expirationMinutes the number of minutes until the paste expires
    * @return the created paste with generated short URL
    */
-  Paste createPaste(String content, int expirationMinutes);
+  Paste createPaste(final String content, final int expirationMinutes);
 
   /**
    * Get a paste by its short URL if it exists and has not expired
@@ -22,7 +22,7 @@ public interface PasteService {
    * @param shortUrl the short URL of the paste
    * @return an Optional containing the paste if found and not expired, or empty otherwise
    */
-  Optional<Paste> getPasteByShortUrl(String shortUrl);
+  Optional<Paste> getPasteByShortUrl(final String shortUrl);
 
   /**
    * Generate a unique short URL for a paste
@@ -37,5 +37,5 @@ public interface PasteService {
    * @param expirationMinutes the number of minutes until the paste expires
    * @return the calculated expiration date
    */
-  LocalDateTime calculateExpirationDate(int expirationMinutes);
+  LocalDateTime calculateExpirationDate(final int expirationMinutes);
 }

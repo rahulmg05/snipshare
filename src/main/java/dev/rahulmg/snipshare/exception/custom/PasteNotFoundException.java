@@ -10,7 +10,7 @@ public class PasteNotFoundException extends RuntimeException {
    *
    * @param message the detail message
    */
-  public PasteNotFoundException(String message) {
+  public PasteNotFoundException(final String message) {
     super(message);
   }
 }

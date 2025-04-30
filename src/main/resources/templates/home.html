@@ -6,7 +6,6 @@
     <title>SnipShare - Share Your Code Snippets</title>
     <style>
         :root {
-            /* Light mode (default) */
             --bg-color: #ffffff;
             --text-color: #333333;
             --border-color: #dddddd;
@@ -16,19 +15,6 @@
             --button-hover-bg: #45a049;
             --button-text: #ffffff;
             --counter-color: #666666;
-        }
-
-        /* Dark mode */
-        [data-theme="dark"] {
-            --bg-color: #222222;
-            --text-color: #e0e0e0;
-            --border-color: #444444;
-            --input-bg: #333333;
-            --error-color: #ff6b6b;
-            --button-bg: #388e3c;
-            --button-hover-bg: #2e7d32;
-            --button-text: #ffffff;
-            --counter-color: #aaaaaa;
         }
 
         body {
@@ -56,17 +42,47 @@
             margin-top: 20px;
         }
 
-        textarea {
-            width: 100%;
-            min-height: 300px;
-            padding: 10px;
+        .editor-container {
+            position: relative;
             margin-bottom: 10px;
             border: 1px solid var(--border-color);
             border-radius: 4px;
+            background-color: var(--input-bg);
+            display: flex;
+            overflow: hidden;
+        }
+
+        .line-numbers {
+            flex: 0 0 40px;
+            padding: 10px 5px 10px 0;
+            text-align: right;
+            background-color: #f0f0f0;
+            border-right: 1px solid var(--border-color);
+            font-family: monospace;
+            color: #888;
+            overflow-y: hidden;
+            user-select: none;
+            line-height: 1.5;
+            box-sizing: border-box;
+        }
+
+        .line-number {
+            height: 1.5em;
+            padding-right: 5px;
+        }
+
+        textarea {
+            flex: 1;
+            min-height: 300px;
+            padding: 10px;
+            border: none;
             font-family: monospace;
             resize: vertical;
             background-color: var(--input-bg);
             color: var(--text-color);
+            line-height: 1.5;
+            overflow-y: scroll; /* Always show scrollbar to maintain consistent width */
+            box-sizing: border-box;
         }
 
         label {
@@ -104,72 +120,9 @@
             margin-bottom: 10px;
         }
 
-        .theme-switch {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            display: flex;
-            align-items: center;
-        }
-
-        .theme-switch-label {
-            margin-right: 10px;
-        }
-
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 60px;
-            height: 34px;
-        }
-
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-            border-radius: 34px;
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 26px;
-            width: 26px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-
-        input:checked + .slider {
-            background-color: var(--button-bg);
-        }
-
-        input:checked + .slider:before {
-            transform: translateX(26px);
-        }
     </style>
 </head>
 <body>
-<div class="theme-switch">
-    <span class="theme-switch-label">Dark Mode</span>
-    <label class="switch">
-        <input type="checkbox" id="theme-toggle">
-        <span class="slider"></span>
-    </label>
-</div>
 <h1>SnipShare</h1>
 <p>Share your code snippets or text with others using a short URL.</p>
 
@@ -181,13 +134,16 @@
         <div class="char-counter">
             <span id="charCount">0</span>/50000 characters
         </div>
-        <textarea
+        <div class="editor-container">
+            <div class="line-numbers" id="line-numbers"></div>
+            <textarea
                 id="content"
                 maxlength="50000"
-                oninput="updateCharCount(this)"
+                oninput="updateContent(this)"
                 placeholder="Enter your code or text here..."
                 required
                 th:field="*{content}"></textarea>
+        </div>
         <div class="error" th:errors="*{content}" th:if="${#fields.hasErrors('content')}"></div>
     </div>
 
@@ -209,7 +165,8 @@
 </form>
 
 <script>
-    function updateCharCount(textarea) {
+    function updateContent(textarea) {
+        // Update character count
         const charCount = textarea.value.length;
         document.getElementById('charCount').textContent = charCount;
 
@@ -218,35 +175,52 @@
             textarea.value = textarea.value.substring(0, 50000);
             document.getElementById('charCount').textContent = 50000;
         }
+
+        // Update line numbers
+        updateLineNumbers(textarea);
     }
 
-    // Theme toggle functionality
-    function setTheme(isDark) {
-        if (isDark) {
-            document.body.setAttribute('data-theme', 'dark');
-            document.getElementById('theme-toggle').checked = true;
-        } else {
-            document.body.removeAttribute('data-theme');
-            document.getElementById('theme-toggle').checked = false;
+    function updateLineNumbers(textarea) {
+        const lineNumbersDiv = document.getElementById('line-numbers');
+        const lines = textarea.value.split('\n');
+        const lineCount = Math.max(1, lines.length); // Ensure at least one line number
+
+        // Generate line numbers
+        let lineNumbersHTML = '';
+        for (let i = 1; i <= lineCount; i++) {
+            lineNumbersHTML += '<div class="line-number">' + i + '</div>';
         }
-        // Save preference to localStorage
-        localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
+
+        lineNumbersDiv.innerHTML = lineNumbersHTML;
+
+        // Ensure the line numbers div has the same padding as the textarea
+        lineNumbersDiv.style.paddingTop = window.getComputedStyle(textarea).paddingTop;
+        lineNumbersDiv.style.paddingBottom = window.getComputedStyle(textarea).paddingBottom;
     }
+
+    // Handle textarea scroll to sync line numbers
+    document.getElementById('content').addEventListener('scroll', function() {
+        document.getElementById('line-numbers').scrollTop = this.scrollTop;
+    });
 
     // Initialize on page load
     window.onload = function () {
         const textarea = document.getElementById('content');
-        updateCharCount(textarea);
+        updateContent(textarea);
 
-        // Check for saved theme preference
-        const savedTheme = localStorage.getItem('darkMode');
-        if (savedTheme === 'enabled') {
-            setTheme(true);
-        }
+        // Update line numbers when textarea is resized
+        textarea.addEventListener('input', function() {
+            updateLineNumbers(this);
+        });
 
-        // Add event listener for theme toggle
-        document.getElementById('theme-toggle').addEventListener('change', function(e) {
-            setTheme(e.target.checked);
+        // Also update when window is resized
+        window.addEventListener('resize', function() {
+            updateLineNumbers(textarea);
+        });
+
+        // Handle initial focus
+        textarea.addEventListener('focus', function() {
+            updateLineNumbers(this);
         });
     };
 </script>

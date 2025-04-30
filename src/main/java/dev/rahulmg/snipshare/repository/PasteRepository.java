@@ -15,7 +15,7 @@ public interface PasteRepository extends JpaRepository<Paste, Long> {
    * @param shortUrl the short URL of the paste
    * @return an Optional containing the paste if found, or empty if not found
    */
-  Optional<Paste> findByShortUrl(String shortUrl);
+  Optional<Paste> findByShortUrl(final String shortUrl);
 
   /**
    * Check if a paste with the given short URL exists
@@ -23,5 +23,5 @@ public interface PasteRepository extends JpaRepository<Paste, Long> {
    * @param shortUrl the short URL to check
    * @return true if a paste with the given short URL exists, false otherwise
    */
-  boolean existsByShortUrl(String shortUrl);
+  boolean existsByShortUrl(final String shortUrl);
 }

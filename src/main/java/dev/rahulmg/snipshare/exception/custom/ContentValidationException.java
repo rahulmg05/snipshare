@@ -10,7 +10,7 @@ public class ContentValidationException extends RuntimeException {
    *
    * @param message the detail message
    */
-  public ContentValidationException(String message) {
+  public ContentValidationException(final String message) {
     super(message);
   }
 }
